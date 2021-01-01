@@ -18,19 +18,19 @@ def main():
     # Check command-line arguments
     if len(sys.argv) not in [2, 3]:
         sys.exit("Usage: python traffic.py data_directory [model.h5]")
-
+    print("step0")
     # Get image arrays and labels for all image files
     images, labels = load_data(sys.argv[1])
-
+    print("step0.5")
     # Split data into training and testing sets
     labels = tf.keras.utils.to_categorical(labels)
     x_train, x_test, y_train, y_test = train_test_split(
         np.array(images), np.array(labels), test_size=TEST_SIZE
     )
-
+    print("step1")
     # Get a compiled neural network
     model = get_model()
-
+    print("step2")
     # Fit model on training data
     model.fit(x_train, y_train, epochs=EPOCHS)
 
@@ -74,8 +74,8 @@ def load_data(data_dir):
 
 
 # tests
-test_path = r"D:\Rice\2020 winter\traffic\traffic\gtsrb\gtsrb"
-load_data(test_path)
+# test_path = r"D:\Rice\2020 winter\traffic\traffic\gtsrb\gtsrb"
+# load_data(test_path)
 
 
 def get_model():
@@ -89,18 +89,18 @@ def get_model():
 
         # Convolutional layer. Learn 32 filters using a 3x3 kernel
         tf.keras.layers.Conv2D(
-            32, (3, 3), activation="relu", input_shape=(30, 30, 3)
+            128, (3, 3), activation="relu", input_shape=(30, 30, 3)
         ),
 
         # Max-pooling layer, using 2x2 pool size
-        tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
+        tf.keras.layers.MaxPooling2D(pool_size=(4, 4)),
 
         # Flatten units
         tf.keras.layers.Flatten(),
 
         # Add a hidden layer with dropout
-        tf.keras.layers.Dense(43, activation="relu"),
-        tf.keras.layers.Dropout(0.5),
+        tf.keras.layers.Dense(512, activation="relu"),
+        tf.keras.layers.Dropout(0.4),
 
         # Add an output layer with output units for all 10 digits
         tf.keras.layers.Dense(43, activation="softmax")
@@ -112,7 +112,7 @@ def get_model():
         loss="categorical_crossentropy",
         metrics=["accuracy"]
     )
-
+    return model
 
 if __name__ == "__main__":
     main()
